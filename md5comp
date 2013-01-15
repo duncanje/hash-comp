@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+	echo "Please provide a hash or file to test"
+	exit 1
+else
+        if [ -f "$1" ]; then
+                file=$(md5sum "$1" | awk '{print $1}')
+        else
+                file=$1
+        fi
+fi
+
+if [ "$2" == "" ]; then
+        echo "Please provide a comparison hash or file"
+        exit 1
+else
+	if [ -f "$2" ]; then
+	        comparison=$(md5sum "$2" | awk '{print $1}')
+	else
+		comparison=$2
+	fi
+fi
+
+echo "Input: "$1
+echo "Comparison: "$2
+echo
+
+if [ "$file" == "$comparison" ]; then
+	echo "SUCCESS - hashes match"
+	exit 0
+else
+	echo "FAILURE - hashes do not match!"
+	exit 1
+fi
+
+
