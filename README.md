@@ -7,3 +7,5 @@ Compares files and MD5 hashes
     md5comp file file
     md5comp hash hash
 
+## License ##
+MIT
