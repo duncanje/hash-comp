@@ -19,11 +19,6 @@ function getMd5 {
 	echo $(md5sum "$1" | awk '{print $1}')
 }
 
-if [ "$1" == "$2" ]; then
-	echo "Please provide different files to test"
-	exit 1
-fi
-
 if [ "$1" == "" ]; then
 	echo "Please provide a hash or file to test"
 	exit 1
