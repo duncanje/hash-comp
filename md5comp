@@ -16,36 +16,34 @@
 
 
 function getMd5 {
-	echo $(md5sum "$1" | awk '{print $1}')
+    echo $(md5sum "$1" | awk '{print $1}')
 }
 
-if [ "$1" == "" ]; then
-	echo "Please provide a hash or file to test"
-	exit 1
-else
-        if [ -f "$1" ]; then
-                file=$(getMd5 "$1")
-        else
-                file=$1
-        fi
-fi
+function parseInput {
+    if [ -f "$1" ]; then
+        echo $(getMd5 "$1")
+    else
+        echo "$1"
+    fi
+}
 
-if [ "$2" == "" ]; then
-        echo "Please provide a comparison hash or file"
-        exit 1
-else
-	if [ -f "$2" ]; then
-	        comparison=$(getMd5 "$2")
-	else
-		comparison=$2
-	fi
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Arguments:"
+    echo "  <file> <file>"
+    echo "  <file> <hash>"
+    echo "  <hash> <file>"
+    echo "  <hash> <hash>"
+    exit 1
 fi
 
 echo "Input: "$1
 echo "Comparison: "$2
 echo
 
-if [ "$file" == "$comparison" ]; then
+input=$(parseInput "$1")
+comparison=$(parseInput "$2")
+
+if [ "$input" == "$comparison" ]; then
 	echo "SUCCESS - hashes match"
 	exit 0
 else
