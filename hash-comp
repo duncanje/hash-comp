@@ -14,34 +14,44 @@
 # BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-function getMd5 {
-    echo $(md5sum "$1" | awk '{print $1}')
+function getHash {
+    echo $($HASH_PROG "$1" | awk '{print $1}')
 }
 
-function parseInput {
+function parseArg {
     if [ -f "$1" ]; then
-        echo $(getMd5 "$1")
+        local hash=$(getHash "$1")
+        if [ "$hash" == "" ]; then
+			echo "An error ocurred obtaining $HASH_PROG hash for $1"
+			exit 1
+		fi
+		echo -e "$hash\n"
+		eval ${2}="$hash"
     else
-        echo "$1"
+        eval ${2}="$1"
     fi
 }
 
-if [ -z "$1" -o -z "$2" ]; then
+if [ ${#@} -lt 2 ]; then
     echo "Arguments:"
-    echo "  <file> <file>"
-    echo "  <file> <hash>"
-    echo "  <hash> <file>"
-    echo "  <hash> <hash>"
+    echo "  [hash program] <file|hash> <file|hash>"
     exit 1
 fi
 
-echo "Input: "$1
-echo "Comparison: "$2
-echo
+if [ -z "$3" ]; then
+	HASH_PROG="md5sum"
+else
+	HASH_PROG="$1"
+	shift
+fi
 
-input=$(parseInput "$1")
-comparison=$(parseInput "$2")
+echo "Input: "$1
+parseArg "$1" "input"
+
+echo "Comparison: "$2
+parseArg "$2" "comparison"
+
+echo
 
 if [ "$input" == "$comparison" ]; then
 	echo "SUCCESS - hashes match"
@@ -50,5 +60,3 @@ else
 	echo "FAILURE - hashes do not match!"
 	exit 1
 fi
-
-

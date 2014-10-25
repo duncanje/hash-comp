@@ -1,11 +1,8 @@
-# md5comp #
-Compares files and MD5 hashes
+# hash-comp #
+Compares files and hashes
 
 ## Usage ##
-    md5comp file hash
-    md5comp hash file
-    md5comp file file
-    md5comp hash hash
+    hash-comp [hash_program] <file|hash> <file|hash>
 
 ## License ##
 MIT
